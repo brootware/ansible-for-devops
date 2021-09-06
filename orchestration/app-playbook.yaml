@@ -1,0 +1,40 @@
+---
+- hosts: app
+  become: yes
+
+  tasks:
+    - name: Run 'set -e' on node
+      shell:
+        cmd: set -e
+
+    - name: Ensure python3 is there
+      yum:
+        name: python3-pip
+        state: present
+
+    - name: Ensure django is there
+      pip:
+        name: django
+        state: present
+
+    - name: Ensure admin group is present
+      group:
+        name: admin
+        state: present
+
+    - name: Ensure user johndoe is present in admin group
+      user:
+        name: johndoe
+        group: admin
+        createhome: yes
+
+    - name: Remove user johndoe
+      user:
+        name: johndoe
+        state: absent
+        remove: yes
+
+    - name: Ensure git is there
+      package:
+        name: git
+        state: present

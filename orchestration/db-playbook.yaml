@@ -1,0 +1,45 @@
+---
+- hosts: db
+  become: yes
+
+  tasks:
+    - name: Run 'set -e' on node
+      shell:
+        cmd: set -e
+    - name: Ensure mariadb server is there
+      yum:
+        name: mariadb-server
+        state: present
+    - name: Ensure mariadb service is enabled
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+    - name: Install firewalld
+      yum:
+        name: firewalld
+        state: present
+    - name: Ensure firewalld service is enabled
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+        #  HAVING ISSUE FROM HERE DOWNWARDS. LOOK LATER
+    - name: Ensure database zone is present for firewalld
+      firewalld:
+        zone: database
+        state: present
+        permenant: yes
+    - name: Enable firewalld for ip address range
+      firewalld:
+        source: 192.168.60.0/24
+        zone: "database"
+        state: enabled
+        permanent: yes
+    - name: Enable firewalld for database port
+      firewalld:
+        port: 3306/tcp
+        zone: "database"
+        state: enabled
+        permanent: yes
