@@ -11,3 +11,6 @@ ansible multi -b -m fetch -a "src=/etc/hosts dest=/tmp"
 ansible multi -m file -a "dest=/tmp/test mode=644 state=directory"
 ansible multi -m file -a "dest=/tmp/test state=absent"
 ansible multi -b -B 3600 -P 0 -a "yum -y update"
+
+# Check Logs
+ansible multi -b -a "tail /var/log/messages"
